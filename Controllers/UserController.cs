@@ -1,4 +1,5 @@
 ﻿using AccessControl_backend.Data;
+using AccessControl_backend.Models;
 using AccessControl_backend.Services;
 using Carter;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,17 @@ public class UserController : CarterModule
             return user != null ? Results.Ok(user) : Results.NotFound(); 
         }
         );
+        app.MapPost("/api/user/create", async (UserDto user, AppDbContext context) =>
+        {
+            UserService service = new(context);
+            User userNew = new User { Name = user.name };
+            var newUser = service.CreateUser(userNew);
+            return newUser != null ? Results.Ok(newUser) : Results.NotFound();
+        }
+        );
     }
+
+    protected record UserDto(string name);
 
 }
 

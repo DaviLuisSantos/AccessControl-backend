@@ -19,6 +19,15 @@ builder.Services.AddScoped<UserFieldValueService>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    // Cria o banco de dados e as tabelas, se necessário, sem usar migrações
+    dbContext.Database.Migrate();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
