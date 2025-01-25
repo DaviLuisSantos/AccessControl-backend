@@ -10,7 +10,7 @@ public class UserController : CarterModule
 {
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/user/getById/{id: int}", async (int id,AppDbContext context ) => 
+        app.MapGet("/api/user/getById/{id:int}", async (int id,AppDbContext context ) => 
         {
             UserService service = new(context);
             var user = service.GetUserById(id);
