@@ -10,8 +10,8 @@ namespace AccessControl_backend.Models
         [Required]
         public string Type { get; set; }
         [Required]
-        public string Required { get; set; }
+        public bool Required { get; set; }
         [Required]
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

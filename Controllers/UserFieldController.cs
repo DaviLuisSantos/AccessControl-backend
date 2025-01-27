@@ -10,7 +10,7 @@ public class UserFieldController : CarterModule
 {
         public override void AddRoutes(IEndpointRouteBuilder app)
         {
-        app.MapGet("/api/userField/create", async (UserFieldDto userField, AppDbContext context) =>
+        app.MapPost("/api/userField/create", async (UserFieldDto userField, AppDbContext context) =>
         {
             UserFieldService service = new(context);
             UserField userFieldNew = new UserField { Name = userField.Name, Type = userField.Type, Required = userField.Required, Description = userField.Description };
@@ -18,6 +18,6 @@ public class UserFieldController : CarterModule
             return newUserField != null ? Results.Ok(newUserField) : Results.NotFound();
         });
         }
-    protected record UserFieldDto(string Name,string Type,string Required,string Description);
+    protected record UserFieldDto(string Name,string Type,bool Required,string? Description);
 }
 

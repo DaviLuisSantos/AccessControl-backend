@@ -2,6 +2,7 @@ using AccessControl_backend.Services;
 using AccessControl_backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Carter;
+using AccessControl_backend.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +12,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddCarter();
+builder.AddAuth();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=database.db"));
 
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserFieldService>();
 builder.Services.AddScoped<UserFieldValueService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -33,9 +46,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseCors("AllowAllOrigins");
+
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.UseAuthorization();
+
+app.UseAuthentication();
 
 app.MapCarter();
 

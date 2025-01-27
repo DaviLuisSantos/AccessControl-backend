@@ -25,6 +25,14 @@ public class UserController : CarterModule
             return newUser != null ? Results.Ok(newUser) : Results.NotFound();
         }
         );
+
+        app.MapGet("/api/user/getAll", async (AppDbContext context) =>
+        {
+            UserService service = new(context);
+            var users = await service.GetAllUsers();
+            return users != null ? Results.Ok(users) : Results.NotFound();
+        }
+        );
     }
 
     protected record UserDto(string name);

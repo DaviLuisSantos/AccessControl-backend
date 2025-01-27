@@ -12,6 +12,12 @@ namespace AccessControl_backend.Services
         {
             _context = context;
         }
+
+        public async Task<List<User>> GetAllUsers()
+        {
+            return await _context.User.ToListAsync();
+        }
+
         public async Task<User> GetUserById(int id)
         {
             return await _context.User.FindAsync(id);
