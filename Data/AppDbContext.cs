@@ -13,6 +13,7 @@ namespace AccessControl_backend.Data
         public DbSet<User> User { get; set; }
         public DbSet<UserField> UserField { get; set; }
         public DbSet<UserFieldValue> UserFieldValue { get; set; }
+        public DbSet<Operator> Operator { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +30,12 @@ namespace AccessControl_backend.Data
                 .HasOne(ub => ub.UserField)
                 .WithMany()
                 .HasForeignKey(ub => ub.UserFieldId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Operator>()
+                .HasOne(ub => ub.User)
+                .WithMany()
+                .HasForeignKey(ub => ub.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

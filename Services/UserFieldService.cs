@@ -15,8 +15,16 @@ namespace AccessControl_backend.Services
         {
             return await _context.UserField.FindAsync(id);
         }
-        public async Task<UserField> CreateUserField(UserField userField)
+        public async Task<UserField> CreateUserField(string name, string type, bool required, string? description)
         {
+            var userField = new UserField
+            {
+                Name = name,
+                Type = type,
+                Required = required,
+                Description = description
+            };
+
             _context.UserField.Add(userField);
             await _context.SaveChangesAsync();
             return userField;
