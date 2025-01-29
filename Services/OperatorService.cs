@@ -12,11 +12,16 @@ namespace AccessControl_backend.Services
         {
             _context = context;
         }
-        public async Task<Operator> GetOperatorById(int id)
+        public async Task<Operator> GetById(int id)
         {
             return await _context.Operator.FindAsync(id);
         }
-        public async Task<Operator> CreateOperator(string login,string password, int userId)
+        public async Task<List<Operator>> GetAll()
+        {
+            return await _context.Operator.ToListAsync();
+        }
+
+        public async Task<Operator> Create(string login, string password, int userId)
         {
             var @operator = new Operator
             {
@@ -29,7 +34,7 @@ namespace AccessControl_backend.Services
             await _context.SaveChangesAsync();
             return @operator;
         }
-        public async Task<Operator> UpdateOperator(int id,string login,string password)
+        public async Task<Operator> Update(int id, string login, string password)
         {
             var @operator = await _context.Operator.FindAsync(id);
             if (@operator == null)

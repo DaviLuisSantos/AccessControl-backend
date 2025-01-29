@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using AccessControl_backend.Models;
-namespace AccessControl_backend.Models
-{
+
+namespace AccessControl_backend.Models;
+
     public class UserFieldValue
     {
         [Key]
@@ -16,4 +16,4 @@ namespace AccessControl_backend.Models
         [Required]
         public string Value { get; set; }
     }
-}
+

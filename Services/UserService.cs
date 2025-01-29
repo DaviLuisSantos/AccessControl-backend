@@ -1,49 +1,65 @@
-﻿using AccessControl_backend.Models;
-using AccessControl_backend.Data;
+﻿using AccessControl_backend.Data;
+using AccessControl_backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace AccessControl_backend.Services
+namespace AccessControl_backend.Services;
+public class UserService
 {
-    public class UserService
+    private readonly AppDbContext _context;
+    public UserService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
-        public UserService(AppDbContext context)
-        {
-            _context = context;
-        }
+        _context = context;
+    }
 
-        public async Task<List<User>> GetAllUsers()
-        {
-            return await _context.User.ToListAsync();
-        }
+    public async Task<List<User>> GetAllUsers()
+    {
+        return await _context.User.ToListAsync();
+    }
 
-        public async Task<User> GetUserById(int id)
+    public async Task<User> GetUserById(int id)
+    {
+        return await _context.User.FindAsync(id);
+    }
+
+    public async Task<bool> Create(string name, string base64Image)
+    {
+
+        byte[] image = Convert.FromBase64String(base64Image);
+
+        string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", name + ".png");
+
+        Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images"));
+
+        await File.WriteAllBytesAsync(path, image);
+
+        User user = new User
         {
-            return await _context.User.FindAsync(id);
-        }
-        public async Task<User> CreateUser(User user)
+            Name = name,
+            Image = path
+        };
+
+        _context.User.Add(user);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<User> Update(User user)
+    {
+        _context.Entry(user).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<User> DeleteUser(int id)
+    {
+        var user = await _context.User.FindAsync(id);
+        if (user == null)
         {
-            _context.User.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
+            return null;
         }
-        public async Task<User> UpdateUser(User user)
-        {
-            _context.Entry(user).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return user;
-        }
-        public async Task<User> DeleteUser(int id)
-        {
-            var user = await _context.User.FindAsync(id);
-            if (user == null)
-            {
-                return null;
-            }
-            _context.User.Remove(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
+        _context.User.Remove(user);
+        await _context.SaveChangesAsync();
+        return user;
     }
 }

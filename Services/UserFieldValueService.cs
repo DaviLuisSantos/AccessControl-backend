@@ -21,8 +21,19 @@ namespace AccessControl_backend.Services
         {
             return await _context.UserFieldValue.FindAsync(id);
         }
-        public async Task<UserFieldValue> CreateUserFieldValue(UserFieldValue userFieldValue)
+        public async Task<List<UserFieldValue>> GetAll()
         {
+            return await _context.UserFieldValue.ToListAsync();
+        }
+        public async Task<UserFieldValue> Create(int userId, int userFieldId, string value )
+        {
+            UserFieldValue userFieldValue = new UserFieldValue
+            {
+                User = await _userService.GetUserById(userId),
+                UserField = await _context.UserField.FindAsync(userFieldId),
+                Value = value
+            };
+
             _context.UserFieldValue.Add(userFieldValue);
             await _context.SaveChangesAsync();
             return userFieldValue;
@@ -43,12 +54,6 @@ namespace AccessControl_backend.Services
             _context.UserFieldValue.Remove(userFieldValue);
             await _context.SaveChangesAsync();
             return userFieldValue;
-        }
-        public async Task<UserFieldValue> Create(UserFieldValue userFieldValue,User user,UserField userField)
-        {
-            userFieldValue.User = user;
-            userFieldValue.UserField = userField;
-            return await CreateUserFieldValue(userFieldValue);
         }
 
     }

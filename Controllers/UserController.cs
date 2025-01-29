@@ -2,7 +2,6 @@
 using AccessControl_backend.Models;
 using AccessControl_backend.Services;
 using Carter;
-using Microsoft.AspNetCore.Mvc;
 
 namespace AccessControl_backend.Controllers;
 
@@ -10,18 +9,17 @@ public class UserController : CarterModule
 {
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/user/getById/{id:int}", async (int id,AppDbContext context ) => 
+        app.MapGet("/api/user/getById/{id:int}", async (int id, AppDbContext context) =>
         {
             UserService service = new(context);
             var user = service.GetUserById(id);
-            return user != null ? Results.Ok(user) : Results.NotFound(); 
+            return user != null ? Results.Ok(user) : Results.NotFound();
         }
         );
         app.MapPost("/api/user/create", async (UserDto user, AppDbContext context) =>
         {
             UserService service = new(context);
-            User userNew = new User { Name = user.name };
-            var newUser = service.CreateUser(userNew);
+            var newUser = service.Create(user.name,user.base64Image);
             return newUser != null ? Results.Ok(newUser) : Results.NotFound();
         }
         );
@@ -35,7 +33,7 @@ public class UserController : CarterModule
         );
     }
 
-    protected record UserDto(string name);
+    protected record UserDto(string name, string base64Image);
 
 }
 

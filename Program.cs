@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data S
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserFieldService>();
 builder.Services.AddScoped<UserFieldValueService>();
+builder.Services.AddScoped<OperatorService>();
 
 builder.Services.AddCors(options =>
 {

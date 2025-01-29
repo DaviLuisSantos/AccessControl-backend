@@ -1,5 +1,5 @@
-﻿using AccessControl_backend.Models;
-using AccessControl_backend.Data;
+﻿using AccessControl_backend.Data;
+using AccessControl_backend.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AccessControl_backend.Services
@@ -15,6 +15,12 @@ namespace AccessControl_backend.Services
         {
             return await _context.UserField.FindAsync(id);
         }
+        public async Task<List<UserField>> GetAll()
+        {
+            return await _context.UserField.ToListAsync();
+        }
+
+
         public async Task<UserField> CreateUserField(string name, string type, bool required, string? description)
         {
             var userField = new UserField

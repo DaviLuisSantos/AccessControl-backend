@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using AccessControl_backend.Models;
-using System.Collections.Generic;
+﻿using AccessControl_backend.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccessControl_backend.Data
 {

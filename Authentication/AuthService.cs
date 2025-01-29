@@ -1,17 +1,12 @@
 ﻿using AccessControl_backend.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Security.Claims;
 using System.Text;
 
 namespace AccessControl_backend.Authentication;
-
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
 
 public static class AuthService
 {
@@ -29,8 +24,8 @@ public static class AuthService
     public static string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var secretKey = _configuration["AppSettings:SecretKey"];
-        var audience = _configuration["AppSettings:Audience"];
+        string? secretKey = _configuration["AppSettings:SecretKey"];
+        string? audience = _configuration["AppSettings:Audience"];
         var issuer = _configuration["AppSettings:Issuer"];
 
         var key = Encoding.ASCII.GetBytes(secretKey);
