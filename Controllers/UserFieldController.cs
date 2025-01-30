@@ -8,18 +8,17 @@ namespace AccessControl_backend.Controllers;
 
 public class UserFieldController : CarterModule
 {
+    private readonly IUserFieldService _userFieldService;
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/api/userField/create", async (UserFieldDto userField, AppDbContext context) =>
         {
-            UserFieldService service = new(context);
-            var newUserField = await service.CreateUserField(userField.Name, userField.Type, userField.Required, userField.Description);
+            var newUserField = await _userFieldService.Create(userField.Name, userField.Type, userField.Required, userField.Description);
             return newUserField != null ? Results.Ok(newUserField) : Results.NotFound();
         });
         app.MapGet("/api/userField/getAll", async (AppDbContext context) =>
         {
-            UserFieldService service = new(context);
-            var users = await service.GetAll();
+            var users = await _userFieldService.GetAll();
             return users != null ? Results.Ok(users) : Results.NotFound();
         }
         );

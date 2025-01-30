@@ -15,10 +15,10 @@ builder.Services.AddCarter();
 builder.AddAuth();
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=database.db"));
 
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<UserFieldService>();
-builder.Services.AddScoped<UserFieldValueService>();
-builder.Services.AddScoped<OperatorService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserFieldService,UserFieldService>();
+builder.Services.AddScoped<IUserFieldValueService,UserFieldValueService>();
+builder.Services.AddScoped<IOperatorService,OperatorService>();
 
 builder.Services.AddCors(options =>
 {

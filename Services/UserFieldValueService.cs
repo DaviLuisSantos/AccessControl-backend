@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AccessControl_backend.Services
 {
-    public class UserFieldValueService
+    public class UserFieldValueService: IUserFieldValueService
     {
         private readonly AppDbContext _context;
         private readonly UserFieldService _userFieldService;
@@ -17,7 +17,7 @@ namespace AccessControl_backend.Services
             _userFieldService = new UserFieldService(context);
             _userService = new UserService(context);
         }
-        public async Task<UserFieldValue> GetUserFieldValueById(int id)
+        public async Task<UserFieldValue> GetById(int id)
         {
             return await _context.UserFieldValue.FindAsync(id);
         }
@@ -25,7 +25,7 @@ namespace AccessControl_backend.Services
         {
             return await _context.UserFieldValue.ToListAsync();
         }
-        public async Task<UserFieldValue> Create(int userId, int userFieldId, string value )
+        public async Task<bool> Create(int userId, int userFieldId, string value )
         {
             UserFieldValue userFieldValue = new UserFieldValue
             {
@@ -36,24 +36,24 @@ namespace AccessControl_backend.Services
 
             _context.UserFieldValue.Add(userFieldValue);
             await _context.SaveChangesAsync();
-            return userFieldValue;
+            return true;
         }
-        public async Task<UserFieldValue> UpdateUserFieldValue(UserFieldValue userFieldValue)
+        public async Task<UserFieldValue> Update(UserFieldValue userFieldValue)
         {
             _context.Entry(userFieldValue).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return userFieldValue;
         }
-        public async Task<UserFieldValue> DeleteUserFieldValue(int id)
+        public async Task<bool> Delete(int id)
         {
             var userFieldValue = await _context.UserFieldValue.FindAsync(id);
             if (userFieldValue == null)
             {
-                return null;
+                return false;
             }
             _context.UserFieldValue.Remove(userFieldValue);
             await _context.SaveChangesAsync();
-            return userFieldValue;
+            return true;
         }
 
     }

@@ -2,55 +2,54 @@
 using AccessControl_backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AccessControl_backend.Services
+namespace AccessControl_backend.Services;
+
+public class UserFieldService: IUserFieldService
 {
-    public class UserFieldService
+    private readonly AppDbContext _context;
+    public UserFieldService(AppDbContext context)
     {
-        private readonly AppDbContext _context;
-        public UserFieldService(AppDbContext context)
-        {
-            _context = context;
-        }
-        public async Task<UserField> GetUserFieldById(int id)
-        {
-            return await _context.UserField.FindAsync(id);
-        }
-        public async Task<List<UserField>> GetAll()
-        {
-            return await _context.UserField.ToListAsync();
-        }
+        _context = context;
+    }
+    public async Task<UserField> GetById(int id)
+    {
+        return await _context.UserField.FindAsync(id);
+    }
+    public async Task<List<UserField>> GetAll()
+    {
+        return await _context.UserField.ToListAsync();
+    }
 
 
-        public async Task<UserField> CreateUserField(string name, string type, bool required, string? description)
+    public async Task<bool> Create(string name, string type, bool required, string? description)
+    {
+        var userField = new UserField
         {
-            var userField = new UserField
-            {
-                Name = name,
-                Type = type,
-                Required = required,
-                Description = description
-            };
+            Name = name,
+            Type = type,
+            Required = required,
+            Description = description
+        };
 
-            _context.UserField.Add(userField);
-            await _context.SaveChangesAsync();
-            return userField;
-        }
-        public async Task<UserField> UpdateUserField(UserField userField)
+        _context.UserField.Add(userField);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+    public async Task<UserField> Update(UserField userField)
+    {
+        _context.Entry(userField).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+        return userField;
+    }
+    public async Task<bool> Delete(int id)
+    {
+        var userField = await _context.UserField.FindAsync(id);
+        if (userField == null)
         {
-            _context.Entry(userField).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-            return userField;
+            return false;
         }
-        public async Task<UserField> DeleteUserField(int id)
-        {
-            var userField = await _context.UserField.FindAsync(id);
-            if (userField == null)
-            {
-                return null;
-            }
-            _context.UserField.Remove(userField);
-            await _context.SaveChangesAsync();
-            return userField;
-        }
+        _context.UserField.Remove(userField);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

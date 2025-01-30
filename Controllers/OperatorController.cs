@@ -7,31 +7,38 @@ namespace AccessControl_backend.Controllers;
 
     public class OperatorController:CarterModule
     {
+    private readonly IOperatorService _operatorService;
     public override void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet("/api/operator/getById/{id:int}", async (int id, AppDbContext context) =>
         {
-            OperatorService service = new(context);
-            var user = service.GetById(id);
+            var user = _operatorService.GetById(id);
             return user != null ? Results.Ok(user) : Results.NotFound();
         }
         );
         app.MapPost("/api/operator/create", async (OperatorDto user, AppDbContext context) =>
         {
-            OperatorService service = new(context);
-            var newUser = service.Create(user.Login, user.Password,user.UserId);
+            var newUser = _operatorService.Create(user.Login, user.Password,user.UserId);
             return newUser != null ? Results.Ok(newUser) : Results.NotFound();
         }
         );
 
         app.MapGet("/api/operator/getAll", async (AppDbContext context) =>
         {
-            OperatorService service = new(context);
-            var users = await service.GetAll();
+            var users = await _operatorService.GetAll();
             return users != null ? Results.Ok(users) : Results.NotFound();
         }
         );
+
+        app.MapPost("/api/login", async (LoginDto user, AppDbContext context) =>
+        {
+            Task<Operator>? userLogged = _operatorService.Login(user.Login, user.Password);
+            return userLogged != null ? Results.Ok(userLogged) : Results.NotFound();
+        }
+        );
+
     }
 
     protected record OperatorDto(string Login, string Password,int UserId);
+    protected record LoginDto(string Login, string Password);
 }

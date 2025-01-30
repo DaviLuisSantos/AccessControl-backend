@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 namespace AccessControl_backend.Services;
-public class UserService
+public class UserService : IUserService
 {
     private readonly AppDbContext _context;
     public UserService(AppDbContext context)
@@ -12,7 +12,7 @@ public class UserService
         _context = context;
     }
 
-    public async Task<List<User>> GetAllUsers()
+    public async Task<List<User>> GetAll()
     {
         return await _context.User.ToListAsync();
     }
@@ -51,15 +51,15 @@ public class UserService
         return user;
     }
 
-    public async Task<User> DeleteUser(int id)
+    public async Task<bool> DeleteUser(int id)
     {
         var user = await _context.User.FindAsync(id);
         if (user == null)
         {
-            return null;
+            return false;
         }
         _context.User.Remove(user);
         await _context.SaveChangesAsync();
-        return user;
+        return true;
     }
 }
